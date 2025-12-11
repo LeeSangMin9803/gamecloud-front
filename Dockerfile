@@ -11,20 +11,16 @@ RUN yum update -y && \
       git \
       && yum clean all
 
-# Apache 웹 루트 준비
 RUN rm -rf /var/www/html/* && mkdir -p /var/www/html
 
-# tp 저장소 dev 브랜치에서 코드 가져오기
 ARG GIT_REPO_URL="https://github.com/tegamu/tp.git"
 ARG GIT_BRANCH="dev"
 
 RUN git clone -b "$GIT_BRANCH" "$GIT_REPO_URL" /var/www/html && \
     rm -rf /var/www/html/.git
 
-# Apache 권한
 RUN chown -R apache:apache /var/www/html
 
-# entrypoint 스크립트 생성: config.php 만들고 php-fpm + httpd 실행
 RUN cat > /entrypoint.sh << 'EOF'
 #!/bin/bash
 set -e
